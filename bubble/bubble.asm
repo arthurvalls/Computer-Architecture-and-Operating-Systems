@@ -35,7 +35,6 @@ next_iteration:
 	li $s1, 0          # Reinicializa o índice do loop interno para 0
 	beq $s0, $s6, print  # Se terminou, vá para print
 	j loop
-
 print:
 	beq $t3, $t4, final  # Se o contador for igual ao número de elementos a serem impressos, vá para final
 	lw $t5, 0($s7)     # Carrega um elemento do array ordenado em $t5

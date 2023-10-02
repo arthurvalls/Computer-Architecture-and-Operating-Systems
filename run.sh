@@ -33,7 +33,7 @@ if [ $? -eq 0 ]; then
         "./$file_without_extension.out"
         
         # Clean up the generated files
-        rm "$file_without_extension.asm" "$file_without_extension.out"
+        rm "$file_without_extension.out"
         
         echo -e "\nRemoved extra files."
     else

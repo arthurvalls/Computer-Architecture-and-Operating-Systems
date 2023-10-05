@@ -1,5 +1,4 @@
 .data
-print_message: .asciiz "Array após ordenação: "  # Mensagem a ser impressa
 array: .word 5, 2, 6, 1, 3, 8, 7, 9, 4, 0         # O array de números a serem ordenados
 array_size: .word 10                            # tamanho do array
 
@@ -7,13 +6,8 @@ array_size: .word 10                            # tamanho do array
 main:
     la $s7, array      # Carrega o endereço base do array em $s7
     li $s0, 0          # Inicializa $s0 com 0 (índice do loop externo)
-    li $s6, 9          # Inicializa $s6 com 9 (número de elementos no array)
+    lw $s6, array_size          # Inicializa $s6 com 9 (número de elementos no array)
     li $s1, 0          # Inicializa $s1 com 0 (índice do loop interno)
-    li $t3, 0          # Inicializa $t3 com 0 (contador para impressão)
-    lw $t4, array_size # Carrega o tamanho do array em $t4
-    li $v0, 4          # Carrega 4 em $v0 (código da chamada do sistema para imprimir string)
-    la $a0, print_message # Carrega o endereço da mensagem em $a0
-    syscall            # Imprime a mensagem
 
 loop:
     sll $t7, $s1, 2    # Calcula o deslocamento para o índice do loop interno
@@ -34,21 +28,8 @@ increment:
 next_iteration:
     addi $s0, $s0, 1  # Incrementa o índice do loop externo
     li $s1, 0          # Reinicializa o índice do loop interno para 0
-    beq $s0, $s6, print  # Se terminou, vá para print
+    beq $s0, $s6, final  # Se terminou, vá para final
     j loop
-
-print:
-    beq $t3, $t4, final  # Se o contador for igual ao número de elementos a serem impressos, vá para final
-    lw $t5, 0($s7)     # Carrega um elemento do array ordenado em $t5
-    li $v0, 1          # Carrega 1 em $v0 (código da chamada do sistema para imprimir inteiro)
-    move $a0, $t5      # Move o elemento a ser impresso para $a0
-    syscall            # Imprime o elemento
-    li $a0, 32         # Carrega 32 em $a0 (código ASCII para espaço)
-    li $v0, 11         # Carrega 11 em $v0 (código da chamada do sistema para imprimir um caractere)
-    syscall            # Imprime um espaço
-    addi $s7, $s7, 4   # Move para o próximo elemento no array ordenado
-    addi $t3, $t3, 1   # Incrementa o contador
-    j print             # Volta para o loop de impressão
 
 final:
     li $v0, 10         # Carrega 10 em $v0 (código da chamada do sistema para sair do programa)

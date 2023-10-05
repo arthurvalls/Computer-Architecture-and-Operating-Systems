@@ -1,12 +1,8 @@
 #include <stdio.h>
 
 int main() {
-    char* print_message = "Array após ordenação: ";
     int array[] = {5, 2, 6, 1, 3, 8, 7, 9, 4, 0};
     int array_size = 10;
-
-    printf("%s", print_message);
-
     int i, j, temp;
 
     for (i = 0; i < array_size - 1; i++) {
@@ -19,15 +15,5 @@ int main() {
             }
         }
     }
-
-    for (i = 0; i < array_size; i++) {
-        printf("%d", array[i]);
-        if (i < array_size - 1) {
-            printf(" ");
-        }
-    }
-
-    printf("\n");
-
     return 0;
 }

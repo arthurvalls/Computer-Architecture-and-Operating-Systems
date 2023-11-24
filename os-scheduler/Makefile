@@ -1,10 +1,16 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
+TARGET = main
 
-all: scheduler
+.PHONY: all run clean
 
-scheduler: src/main.c src/scheduler.c src/process.c src/queue.c
-	$(CC) $(CFLAGS) $^ -o $@
+all: $(TARGET) run clean
+
+$(TARGET): src/main.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+run: $(TARGET)
+	./$(TARGET)
 
 clean:
-	rm -f scheduler
+	@rm -f $(TARGET)

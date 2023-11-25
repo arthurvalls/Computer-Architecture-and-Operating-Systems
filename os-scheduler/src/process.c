@@ -3,8 +3,8 @@
 #include <stdlib.h>
 
 
-#define MAX_BURST_TIME 10
-#define MAX_ARRIVAL_TIME 7
+#define MAX_BURST_TIME 7
+#define MAX_ARRIVAL_TIME 4
 
 
 Process* newProcess(int pid)
@@ -15,8 +15,8 @@ Process* newProcess(int pid)
     // process->priority = rand() % 5 + 1; // Random priority between 1 and 5
 
     process->pid = pid;
-    process->burst_time = rand() % MAX_BURST_TIME + 1; // Random burst time between 1 and 10
-    process->arrival_time = rand() % MAX_ARRIVAL_TIME + 1; // Random arrival time between 1 and 5
+    process->burst_time = rand() % MAX_BURST_TIME + 1; // Random burst time between 1 and 7
+    process->arrival_time = rand() % (MAX_ARRIVAL_TIME + 1); // Random arrival time between 0 and 4
     process->remaining_burst_time = process->burst_time;
     process->io_type = getIOType();
     process->status = READY;
@@ -35,7 +35,26 @@ Process* initializeProcesses(int maxProcesses)
     return processes;
 }
 
+void executeProcess(Process* process, int quantum)
+{
+    printf("P%d está sendo executado agora.\n", process->pid);
+    process->remaining_burst_time -= 1;
+    process->remaining_quantum =+ 1;
+    if (process->remaining_quantum == quantum)
+    {
+        process->remaining_quantum = 0;
+    }
+}
 
+void executeIO(Process* process)
+{
+    IOType IOType = process->io_type;
+    switch(IOType)
+    {
+        case DISK_IO:
+
+    }
+}
 
 void destroyProcess(Process* process)
 {
@@ -81,16 +100,3 @@ const char* getStatus(ProcessStatus processStatus)
             return "Unknown Status Type";
     }
 }
-
-
-
-//void executeProcess(Process* process) {
-//    printf("Executando processo %d\n", process->pid);
-//    process->burst_time -= rand() % 10 + 1; // Simulação de execução com tempo aleatório
-//}
-
-//void changePriority(Process* process, int priority)
-//{
-//    process->priority = priority;
-//}
-

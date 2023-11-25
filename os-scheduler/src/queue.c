@@ -10,9 +10,9 @@ int isQueueEmpty(Queue* queue) {
     return queue->front == NULL;
 }
 
-void enqueue(Queue* queue, Process process) {
+void queueInsert(Queue* queue, Process process) {
     Node* newNode = (Node*)malloc(sizeof(Node));
-    newNode->data = process;
+    newNode->process = process;
     newNode->next = NULL;
 
     if (isQueueEmpty(queue)) {
@@ -23,17 +23,33 @@ void enqueue(Queue* queue, Process process) {
     }
 }
 
-Process dequeue(Queue* queue) {
+Process queuePop(Queue* queue) {
     if (isQueueEmpty(queue)) {
         // Tratar fila vazia conforme necessário
         exit(EXIT_FAILURE);
     }
 
     Node* temp = queue->front;
-    Process process = temp->data;
+    Process process = temp->process;
 
     queue->front = temp->next;
     free(temp);
 
     return process;
+}
+
+
+void printQueue(Queue* queue) {
+    if (isQueueEmpty(queue)) {
+        printf("Fila vazia, CPU esta ociosa.\n");
+        return;
+    }
+
+    printf("Queue: ");
+    Node* current = queue->front;
+    while (current != NULL) {
+        printf("%d ", current->process.pid);
+        current = current->next;
+    }
+    printf("\n");
 }

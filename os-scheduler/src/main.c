@@ -12,14 +12,16 @@ int main()
 {
     srand(time(NULL));
 
-    Queue highPriorityQueue, lowPriorityQueue, ioQueue;
+    Queue highPriorityQueue, lowPriorityQueue, diskQueue, tapeQueue, printingQueue;
     initializeQueue(&highPriorityQueue);
     initializeQueue(&lowPriorityQueue);
-    initializeQueue(&ioQueue);
+    initializeQueue(&diskQueue);
+    initializeQueue(&tapeQueue);
+    initializeQueue(&printingQueue);
 
     roundRobinScheduler(&highPriorityQueue,
                              &lowPriorityQueue,
-                             &ioQueue,
+                             &diskQueue,
                              QUANTUM,
                              MAX_PROCESSES);
 

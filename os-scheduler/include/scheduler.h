@@ -11,4 +11,7 @@ void roundRobinScheduler(Queue* highPriorityQueue,
 
 void printProcessesInfo(Process* processes, int maxProcesses);
 
+
+void checkNewProcesses(Process* processes, int maxProcesses, int currentTime, Queue* queue);
+
 #endif // SCHEDULER_H

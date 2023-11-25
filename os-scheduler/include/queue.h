@@ -4,7 +4,7 @@
 #include "process.h"
 
 typedef struct Node {
-    Process data;
+    Process process;
     struct Node* next;
 } Node;
 
@@ -15,7 +15,8 @@ typedef struct {
 
 void initializeQueue(Queue* queue);
 int isQueueEmpty(Queue* queue);
-void enqueue(Queue* queue, Process process);
-Process dequeue(Queue* queue);
+void queueInsert(Queue* queue, Process process);
+Process queuePop(Queue* queue);
+void printQueue(Queue* queue);
 
 #endif // QUEUE_H

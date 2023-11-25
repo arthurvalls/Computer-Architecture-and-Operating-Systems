@@ -58,7 +58,7 @@ Process queuePop(Queue* queue) {
 
 void printQueue(Queue* queue) {
     if (isQueueEmpty(queue)) {
-        printf("Fila vazia.\n");
+        printf("\n");
         return;
     }
 

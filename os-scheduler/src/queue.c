@@ -48,7 +48,7 @@ void printQueue(Queue* queue) {
     printf("Queue: ");
     Node* current = queue->front;
     while (current != NULL) {
-        printf("%d ", current->process.pid);
+        printf("P%d ", current->process.pid);
         current = current->next;
     }
     printf("\n");

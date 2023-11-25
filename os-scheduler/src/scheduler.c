@@ -7,12 +7,15 @@
 
 
 // Função principal do escalonador Round Robin com Feedback
-void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queue* ioQueue, int quantum, int maxProcesses) {
+void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queue* diskQueue,
+                         Queue* tapeQueue, Queue* printerQueue,
+                         int quantum,
+                         int maxProcesses)
+{
 
     // cria todos os processos e imprime na tela suas infos
     Process* processes = initializeProcesses(maxProcesses);
     printProcessesInfo(processes, maxProcesses);
-
 
 
     int currentTime = 0;
@@ -30,13 +33,8 @@ void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queu
             Process currentProcess = queuePop(highPriorityQueue);
             executeProcess(&currentProcess, quantum);
 
-            if (currentProcess.remaining_burst_time == 0)
-            {
-                printf("P%d finalizou.\n", currentProcess.pid);
-                currentProcess.end_time = currentTime;
+            if (isProcessedFinished(&currentProcess, currentTime))
                 finishedProcesses++;
-                printf("P%d com turnaround de %d u.t.\n", currentProcess.pid, currentProcess.end_time - currentProcess.arrival_time);
-            }
             else
             {
                 printf("P%d sofreu preempção, voltou pro fim da fila.\n", currentProcess.pid);

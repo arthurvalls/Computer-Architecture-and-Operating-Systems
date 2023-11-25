@@ -56,6 +56,20 @@ void executeIO(Process* process)
     }
 }
 
+int isProcessedFinished(Process* process, int currentTime)
+{
+    if (process->remaining_burst_time == 0)
+    {
+        printf("P%d finalizou.\n", process->pid);
+        process->end_time = currentTime;
+        printf("P%d com turnaround de %d u.t.\n", process->pid, process->end_time - process->arrival_time);
+        return 1;
+    }
+    return 0;
+}
+
+
+
 void destroyProcess(Process* process)
 {
     free(process);
@@ -75,8 +89,8 @@ const char* getIOName(IOType ioType)
             return "Disk";
         case TAPE_IO:
             return "Tape";
-        case PRINTING_IO:
-            return "Printing";
+        case PRINTER_IO:
+            return "Printer";
         default:
             return "Unknown IO Type";
     }
@@ -90,8 +104,6 @@ const char* getStatus(ProcessStatus processStatus)
             return "READY";
         case RUNNING:
             return "RUNNING";
-        case PRINTING_IO:
-            return "PRINTING_IO";
         case IO:
             return "IO";
         case FINISHED:

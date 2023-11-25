@@ -5,7 +5,9 @@
 
 void roundRobinScheduler(Queue* highPriorityQueue,
                          Queue* lowPriorityQueue,
-                         Queue* ioQueue,
+                         Queue* diskQueue,
+                         Queue* tapeQueue,
+                         Queue* printerQueue,
                          int quantum,
                          int maxProcesses);
 

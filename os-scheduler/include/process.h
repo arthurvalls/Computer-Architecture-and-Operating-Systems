@@ -4,7 +4,7 @@
 
 #define DISK_TIME 3
 #define TAPE_TIME 3
-#define PRINTING_TIME 3
+#define PRINTER_TIME 3
 
 
 #define MAX_BURST_TIME 7
@@ -14,7 +14,7 @@
 typedef enum {
     DISK_IO,
     TAPE_IO,
-    PRINTING_IO,
+    PRINTER_IO,
 } IOType;
 
 typedef enum {
@@ -48,6 +48,7 @@ typedef struct {
 Process* newProcess(int pid);
 Process* initializeProcesses(int maxProcesses);
 void executeProcess(Process* process, int quantum);
+int isProcessedFinished(Process* process, int current_time);
 
 const char* getIOName(IOType ioType);
 int getIOType();

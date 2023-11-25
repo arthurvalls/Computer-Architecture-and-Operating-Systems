@@ -1,4 +1,3 @@
-// process.c
 #include "../include/process.h"
 #include <stdio.h>
 #include <stdlib.h>

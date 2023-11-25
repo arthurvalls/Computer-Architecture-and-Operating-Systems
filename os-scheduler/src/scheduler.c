@@ -1,4 +1,3 @@
-// scheduler.c
 #include "../include/scheduler.h"
 #include "../include/process.h"
 #include "../include/queue.h"

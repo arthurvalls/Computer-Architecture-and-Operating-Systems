@@ -52,6 +52,8 @@ Process* initializeProcesses(int maxProcesses);
 void executeProcess(Process* process, int quantum);
 int isProcessedFinished(Process* process, int current_time);
 
+int isQuantumComplete(Process* process, int quantum);
+
 const char* getIOName(IOType ioType);
 IOType getIOType();
 int getIOTime(IOType ioType);

@@ -37,19 +37,19 @@ void roundRobinScheduler(Process* processes,
         {
             Process currentProcess = queuePop(highPriorityQueue);
             executeProcess(&currentProcess, QUANTUM);
+
             if (isProcessedFinished(&currentProcess, currentTime))
             {
                 finishedProcesses++;
             }
-            else if (currentProcess.remaining_quantum == QUANTUM)
+            else if (isQuantumComplete(&currentProcess, QUANTUM))
             {
-                currentProcess.remaining_quantum = 0;
-                printf("P%d sofreu preempção, vai pra fila de baixa prioridade.\n", currentProcess.pid);
+                printf("P%d sofreu preempção, vai pra fila de baixa prioridade.\n",
+                       currentProcess.pid);
                 queueInsert(lowPriorityQueue, currentProcess);
             }
             else
             {
-                printf("P%d ainda tem %d u.t para finalizar.\n", currentProcess.pid, currentProcess.remaining_burst_time);
                 queueInsertFirst(highPriorityQueue, currentProcess);
             }
         }
@@ -62,16 +62,14 @@ void roundRobinScheduler(Process* processes,
             {
                 finishedProcesses++;
             }
-            else if (currentProcess.remaining_quantum == QUANTUM)
+            else if (isQuantumComplete(&currentProcess, QUANTUM))
             {
-
-                currentProcess.remaining_quantum = 0;
-                printf("P%d sofreu preempção, vai pro final da fila de baixa prioridade.\n", currentProcess.pid);
+                printf("P%d sofreu preempção, vai pro final da fila de baixa prioridade.\n",
+                       currentProcess.pid);
                 queueInsert(lowPriorityQueue, currentProcess);
             }
             else
             {
-                printf("P%d ainda tem %d u.t para finalizar.\n", currentProcess.pid, currentProcess.remaining_burst_time);
                 queueInsertFirst(lowPriorityQueue, currentProcess);
             }
         }
@@ -79,10 +77,11 @@ void roundRobinScheduler(Process* processes,
             printf("\nFilas vazias, CPU está ociosa.\n");
         else
         {
-            printf("\n");
-            formattedPrintQueue("Fila de alta prioridade: ", highPriorityQueue);
-            formattedPrintQueue("Fila de baixa prioridade: ", lowPriorityQueue);
-            printf("\n");
+            printAllQueues(highPriorityQueue,
+                           lowPriorityQueue,
+                           diskQueue,
+                           tapeQueue,
+                           printerQueue);
         }
         currentTime++;
     }

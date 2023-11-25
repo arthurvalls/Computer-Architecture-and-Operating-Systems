@@ -113,6 +113,16 @@ const char* getIOName(IOType ioType)
     }
 }
 
+int isQuantumComplete(Process* process, int quantum)
+{
+    if (process->remaining_quantum == quantum)
+    {
+        process->remaining_quantum = 0;
+        return 1;
+    }
+    return 0;
+}
+
 const char* getStatus(ProcessStatus processStatus)
 {
     switch (processStatus)

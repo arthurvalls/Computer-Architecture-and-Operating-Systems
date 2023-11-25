@@ -41,6 +41,7 @@ void queueInsert(Queue* queue, Process process) {
 
 void queueInsertFirst(Queue* queue, Process process)
 {
+    printf("P%d ainda tem %d u.t para finalizar.\n", process.pid, process.remaining_burst_time);
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->process = process;
     newNode->next = NULL;
@@ -90,4 +91,19 @@ void formattedPrintQueue(const char* queueName, Queue* queue)
 {
     printf("%s: ", queueName);
     printQueue(queue);
+}
+
+void printAllQueues(Queue* highPriorityQueue,
+                   Queue* lowPriorityQueue,
+                   Queue* diskQueue,
+                   Queue* tapeQueue,
+                   Queue* printerQueue)
+{
+    printf("\n");
+    formattedPrintQueue("Fila de alta prioridade: ", highPriorityQueue);
+    formattedPrintQueue("Fila de baixa prioridade: ", lowPriorityQueue);
+    formattedPrintQueue("Fila de IO disco: ", diskQueue);
+    formattedPrintQueue("Fila de IO fita: ", tapeQueue);
+    formattedPrintQueue("Fila de IO impressão: ", printerQueue);
+    printf("\n");
 }

@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 #define QUANTUM 2
 #define MAX_PROCESSES 5
 
@@ -24,7 +25,11 @@ void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queu
 
     while (finishedProcesses < MAX_PROCESSES)
     {
-        printf("=========== INSTANTE %d ===========\n", currentTime);
+        printf("\n=========== INSTANTE %d ===========\n", currentTime);
+        printf("\n");
+        formattedPrintQueue("Fila de alta prioridade: ", highPriorityQueue);
+        formattedPrintQueue("Fila de baixa prioridade: ", lowPriorityQueue);
+        printf("\n");
 
         checkNewProcesses(processes, currentTime, highPriorityQueue);
 
@@ -32,37 +37,54 @@ void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queu
         {
             Process currentProcess = queuePop(highPriorityQueue);
             executeProcess(&currentProcess, QUANTUM);
-
             if (isProcessedFinished(&currentProcess, currentTime))
-                finishedProcesses++;
-
-            else
             {
+                finishedProcesses++;
+            }
+            else if (currentProcess.remaining_quantum == QUANTUM)
+            {
+                currentProcess.remaining_quantum = 0;
                 printf("P%d sofreu preempção, vai pra fila de baixa prioridade.\n", currentProcess.pid);
                 queueInsert(lowPriorityQueue, currentProcess);
+            }
+            else
+            {
+                printf("P%d ainda tem %d u.t para finalizar.\n", currentProcess.pid, currentProcess.remaining_burst_time);
+                queueInsertFirst(highPriorityQueue, currentProcess);
             }
         }
         else if (!isQueueEmpty(lowPriorityQueue))
         {
             Process currentProcess = queuePop(lowPriorityQueue);
             executeProcess(&currentProcess, QUANTUM);
+
             if (isProcessedFinished(&currentProcess, currentTime))
+            {
                 finishedProcesses++;
+            }
+            else if (currentProcess.remaining_quantum == QUANTUM)
+            {
+
+                currentProcess.remaining_quantum = 0;
+                printf("P%d sofreu preempção, vai pro final da fila de baixa prioridade.\n", currentProcess.pid);
+                queueInsert(lowPriorityQueue, currentProcess);
+            }
             else
             {
-                printf("P%d sofreu preempção, volta pro fim da fila de baixa prioridade.\n", currentProcess.pid);
-                queueInsert(lowPriorityQueue, currentProcess);
+                printf("P%d ainda tem %d u.t para finalizar.\n", currentProcess.pid, currentProcess.remaining_burst_time);
+                queueInsertFirst(lowPriorityQueue, currentProcess);
             }
         }
 
-        formattedPrintQueue("Fila de alta prioridade: ", highPriorityQueue);
-        formattedPrintQueue("Fila de baixa prioridade: ", lowPriorityQueue);
         currentTime++;
     }
 
-    printf("Escalonamento finalizado com sucesso.\n");
-    for (int i=0; i < MAX_PROCESSES; ++i)
-        printf("TT(P%d): %d\n", processes[i].pid, processes[i].end_time);
+    printf("\nEscalonamento finalizado com sucesso.\n\n");
+
+
+    printf("\n=========== FINAL ===========\n");
+    printf("Tempos de Turnaround: \n\n");
+    printTurnaroundTime(processes);
 }
 
 
@@ -105,6 +127,6 @@ void printTurnaroundTime(Process* processes)
 {
     for (int i = 0; i < MAX_PROCESSES; ++i)
     {
-        printf("Turnaround Time (P%d): %d u.t\n", processes[i].pid, processes[i].turnaround_time);
+        printf("TT (P%d): %d u.t\n", processes[i].pid, processes[i].turnaround_time);
     }
 }

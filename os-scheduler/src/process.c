@@ -18,6 +18,7 @@ Process* newProcess(int pid)
     process->burst_time = rand() % MAX_BURST_TIME + 1; // Random burst time between 1 and 7
     process->arrival_time = rand() % (MAX_ARRIVAL_TIME + 1); // Random arrival time between 0 and 4
     process->remaining_burst_time = process->burst_time;
+    process->remaining_quantum = 0;
     process->io_type = getIOType();
     process->status = READY;
     return process;
@@ -37,13 +38,9 @@ Process* initializeProcesses(int maxProcesses)
 
 void executeProcess(Process* process, int quantum)
 {
-    printf("P%d está sendo executado agora.\n", process->pid);
+    printf("P%d executou por 1 u.t.\n", process->pid);
     process->remaining_burst_time -= 1;
-    process->remaining_quantum =+ 1;
-    if (process->remaining_quantum == quantum)
-    {
-        process->remaining_quantum = 0;
-    }
+    process->remaining_quantum += 1;
 }
 
 void executeIO(Process* process)

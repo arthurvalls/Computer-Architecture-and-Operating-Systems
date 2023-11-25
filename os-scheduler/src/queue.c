@@ -23,6 +23,23 @@ void queueInsert(Queue* queue, Process process) {
     }
 }
 
+void queueInsertFirst(Queue* queue, Process process)
+{
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->process = process;
+    newNode->next = NULL;
+
+    if (isQueueEmpty(queue))
+    {
+        queue->front = queue->rear = newNode;
+    } else
+    {
+        newNode->next = queue->front;
+        queue->front = newNode;
+    }
+}
+
+
 Process queuePop(Queue* queue) {
     if (isQueueEmpty(queue)) {
         // Tratar fila vazia conforme necessário
@@ -57,5 +74,4 @@ void formattedPrintQueue(const char* queueName, Queue* queue)
 {
     printf("%s: ", queueName);
     printQueue(queue);
-    printf("\n");
 }

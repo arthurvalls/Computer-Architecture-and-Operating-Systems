@@ -21,7 +21,6 @@ void roundRobinScheduler(Process* processes,
     // imprime na tela info dos processos
     printProcessesInfo(processes);
 
-
     int currentTime = 0;
     int finishedProcesses = 0;
 
@@ -29,18 +28,22 @@ void roundRobinScheduler(Process* processes,
     while (finishedProcesses < MAX_PROCESSES)
     {
         printf("\n=========== INSTANTE %d ===========\n\n", currentTime);
-
+        sleep(1);
 
         checkNewProcesses(processes, currentTime, highPriorityQueue);
 
         if (!isQueueEmpty(highPriorityQueue))
         {
             Process currentProcess = queuePop(highPriorityQueue);
-            executeProcess(&currentProcess, QUANTUM);
+            executeProcess(&currentProcess);
 
             if (isProcessedFinished(&currentProcess, currentTime))
             {
                 finishedProcesses++;
+            }
+            else if (isIoTime(&currentProcess))
+            {
+                sendToIO(currentProcess, diskQueue, tapeQueue, printerQueue);
             }
             else if (isQuantumComplete(&currentProcess, QUANTUM))
             {
@@ -56,11 +59,15 @@ void roundRobinScheduler(Process* processes,
         else if (!isQueueEmpty(lowPriorityQueue))
         {
             Process currentProcess = queuePop(lowPriorityQueue);
-            executeProcess(&currentProcess, QUANTUM);
+            executeProcess(&currentProcess);
 
             if (isProcessedFinished(&currentProcess, currentTime))
             {
                 finishedProcesses++;
+            }
+            else if (isIoTime(&currentProcess))
+            {
+                sendToIO(currentProcess, diskQueue, tapeQueue, printerQueue);
             }
             else if (isQuantumComplete(&currentProcess, QUANTUM))
             {
@@ -73,8 +80,38 @@ void roundRobinScheduler(Process* processes,
                 queueInsertFirst(lowPriorityQueue, currentProcess);
             }
         }
-        if (isQueueEmpty(highPriorityQueue) && isQueueEmpty(lowPriorityQueue))
-            printf("\nFilas vazias, CPU está ociosa.\n");
+        if (!isQueueEmpty(diskQueue))
+        {
+            Process currentIO = queuePop(diskQueue);
+            executeIO(&currentIO);
+            if (isIoFinished(&currentIO))
+                queueInsert(lowPriorityQueue, currentIO);
+            else
+                queueInsert(diskQueue, currentIO);
+        }
+        if (!isQueueEmpty(tapeQueue))
+        {
+            Process currentIO = queuePop(tapeQueue);
+            executeIO(&currentIO);
+            if (isIoFinished(&currentIO))
+                queueInsert(highPriorityQueue, currentIO);
+            else
+                queueInsert(tapeQueue, currentIO);
+        }
+        if (!isQueueEmpty(printerQueue))
+        {
+            Process currentIO = queuePop(printerQueue);
+            executeIO(&currentIO);
+            if (isIoFinished(&currentIO))
+                queueInsert(highPriorityQueue, currentIO);
+            else
+                queueInsert(printerQueue, currentIO);
+        }
+        if (!isCPUActive(highPriorityQueue, lowPriorityQueue) &&
+            !checkIfHasIo(diskQueue, tapeQueue, printerQueue))
+        {
+            printf("\nNenhuma fila com processos, CPU ociosa.\n");
+        }
         else
         {
             printAllQueues(highPriorityQueue,
@@ -103,16 +140,17 @@ void printProcessesInfo(Process* processes)
 {
     if (!(processes == NULL))
     {
-        printf("%-10s%-15s%-15s%-20s%-10s\n", "PID", "Burst Time", "Arrival Time", "IO Type", "Status");
+        printf("%-10s%-15s%-15s%-20s%-20s%-10s\n", "PID", "Burst Time", "Arrival Time", "IO Type", "IO Start", "Status");
         printf("---------------------------------------------------------------\n");
 
         for (int i = 0; i < MAX_PROCESSES; i++)
         {
-            printf("%-10d%-15d%-15d%-20s%-10s\n",
+            printf("%-10d%-15d%-15d%-20s%-15d%-10s\n",
                    processes[i].pid,
                    processes[i].burst_time,
                    processes[i].arrival_time,
                    getIOName(processes[i].io_type),
+                   processes[i].io_start,
                    getStatus(processes[i].status));
         }
     }
@@ -139,5 +177,40 @@ void printTurnaroundTime(Process* processes)
     for (int i = 0; i < MAX_PROCESSES; ++i)
     {
         printf("TT (P%d): %d u.t\n", processes[i].pid, processes[i].turnaround_time);
+    }
+}
+
+int isCPUActive(Queue* highPriorityQueue, Queue* lowPriorityQueue)
+{
+    if (!isQueueEmpty(highPriorityQueue) || !isQueueEmpty(lowPriorityQueue))
+        return 1;
+    else
+        return 0;
+}
+
+int checkIfHasIo(Queue* diskQueue, Queue* tapeQueue, Queue* printerQueue)
+{
+    if (!isQueueEmpty(diskQueue) || !isQueueEmpty(tapeQueue) || !isQueueEmpty(printerQueue))
+        return 1;
+    else
+        return 0;
+}
+
+void sendToIO(Process process, Queue* diskQueue, Queue* tapeQueue, Queue* printerQueue)
+{
+    switch (process.io_type)
+    {
+        case(DISK_IO):
+            printf("P%d vai para a fila de disco\n", process.pid);
+            queueInsert(diskQueue, process);
+            break;
+        case(TAPE_IO):
+            printf("P%d vai para a fila de fita\n", process.pid);
+            queueInsert(tapeQueue, process);
+            break;
+        case(PRINTER_IO):
+            printf("P%d vai para a fila de impressora\n", process.pid);
+            queueInsert(printerQueue, process);
+            break;
     }
 }

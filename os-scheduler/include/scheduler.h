@@ -19,4 +19,10 @@ void formattedPrintQueue(const char* queueName, Queue* queue);
 
 void printTurnaroundTime(Process* processes);
 
+int isCPUActive(Queue* highPriorityQueue, Queue* lowPriorityQueue);
+
+int checkIfHasIo(Queue* diskQueue, Queue* tapeQueue, Queue* printerQueue);
+
+void sendToIO(Process process, Queue* diskQueue, Queue* tapeQueue, Queue* printerQueue);
+
 #endif // SCHEDULER_H

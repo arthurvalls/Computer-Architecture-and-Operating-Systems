@@ -38,9 +38,10 @@ typedef struct {
 
     int io_duration;
     int remaining_io_duration;
-
+    int io_start;
     int remaining_quantum;
     int remaining_burst_time; // To keep track of remaining burst time during round-robin
+    int current_burst_time;
 
     IOType io_type;
     ProcessStatus status;
@@ -48,16 +49,29 @@ typedef struct {
 
 
 Process* newProcess(int pid);
+
 Process* initializeProcesses(int maxProcesses);
-void executeProcess(Process* process, int quantum);
+
+void executeProcess(Process* process);
+
 int isProcessedFinished(Process* process, int current_time);
+
+int isIoFinished(Process* process);
+
+int isIoTime(Process* process);
 
 int isQuantumComplete(Process* process, int quantum);
 
+void executeIO(Process* process);
+
 const char* getIOName(IOType ioType);
+
 IOType getIOType();
+
 int getIOTime(IOType ioType);
+
 const char* getStatus(ProcessStatus processStatus);
+
 void setTurnaround(Process* process,int startTime, int endTime);
 
 

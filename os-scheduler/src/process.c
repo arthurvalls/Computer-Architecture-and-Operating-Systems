@@ -18,7 +18,16 @@ Process* newProcess(int pid)
     process->burst_time = rand() % MAX_BURST_TIME + 1; // Random burst time between 1 and 7
     process->arrival_time = rand() % (MAX_ARRIVAL_TIME + 1); // Random arrival time between 0 and 4
     process->remaining_burst_time = process->burst_time;
+
+    // Gera um io_start entre [arrival_time, burst_time]
+    process->io_start = rand() % (process->burst_time - process->arrival_time) + process->arrival_time;
+
+    if (process->io_start >= process->burst_time) {
+        process->io_start = process->burst_time - 1;
+    }
+
     process->remaining_quantum = 0;
+    process->current_burst_time = 0;
     process->io_type = getIOType();
     process->io_duration = getIOTime(process->io_type);
     process->remaining_io_duration = process->io_duration;
@@ -38,23 +47,26 @@ Process* initializeProcesses(int maxProcesses)
     return processes;
 }
 
-void executeProcess(Process* process, int quantum)
+void executeProcess(Process* process)
 {
     printf("P%d executou por 1 u.t.\n", process->pid);
     process->remaining_burst_time -= 1;
+    process->current_burst_time += 1;
     process->remaining_quantum += 1;
+    process->status = RUNNING;
 }
 
-//void executeIO(Process* process)
-//{
-//    process->remaining_io_duration += 1;
-//    if (process->remaining_io_duration == process->io_duration)
-//    switch(IOType)
-//    {
-//        case DISK_IO:
-//
-//    }
-//}
+void executeIO(Process* process)
+{
+    if (process->status == RUNNING)
+        process->status = IO;
+    else
+    {
+        process->remaining_io_duration -= 1;
+        printf("P%d executou seu I/O por 1 u.t., faltam %d u.t.\n",
+               process->pid, process->remaining_io_duration);
+    }
+}
 
 
 void setTurnaround(Process* process,int startTime, int endTime)
@@ -76,6 +88,23 @@ int isProcessedFinished(Process* process, int currentTime)
     return 0;
 }
 
+int isIoFinished(Process* process)
+{
+    if (process->remaining_io_duration == 0)
+    {
+        printf("P%d finalizou seu IO.\n", process->pid);
+        return 1;
+    }
+    return 0;
+}
+
+int isIoTime(Process* process)
+{
+    if (process->current_burst_time == process->io_start)
+        return 1;
+    else
+        return 0;
+}
 
 IOType getIOType()
 {

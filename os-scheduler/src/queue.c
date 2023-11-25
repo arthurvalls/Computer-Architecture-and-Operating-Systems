@@ -41,15 +41,21 @@ Process queuePop(Queue* queue) {
 
 void printQueue(Queue* queue) {
     if (isQueueEmpty(queue)) {
-        printf("Fila vazia, CPU esta ociosa.\n");
+        printf("Fila vazia.\n");
         return;
     }
 
-    printf("Queue: ");
     Node* current = queue->front;
     while (current != NULL) {
         printf("P%d ", current->process.pid);
         current = current->next;
     }
+    printf("\n");
+}
+
+void formattedPrintQueue(const char* queueName, Queue* queue)
+{
+    printf("%s: ", queueName);
+    printQueue(queue);
     printf("\n");
 }

@@ -34,8 +34,10 @@ typedef struct {
     int arrival_time;
     int burst_time;
     int end_time;
+    int turnaround_time;
 
     int io_duration;
+    int remaining_io_duration;
 
     int remaining_quantum;
     int remaining_burst_time; // To keep track of remaining burst time during round-robin
@@ -53,6 +55,7 @@ int isProcessedFinished(Process* process, int current_time);
 const char* getIOName(IOType ioType);
 int getIOType();
 const char* getStatus(ProcessStatus processStatus);
+void setTurnaround(Process* process,int startTime, int endTime);
 
 
 #endif // PROCESS_H

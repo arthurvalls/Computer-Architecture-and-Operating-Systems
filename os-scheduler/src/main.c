@@ -5,8 +5,6 @@
 #include "stdlib.h"
 #include "time.h"
 
-#define QUANTUM 2
-#define MAX_PROCESSES 5
 
 int main()
 {
@@ -23,9 +21,7 @@ int main()
                         &lowPriorityQueue,
                         &diskQueue,
                         &tapeQueue,
-                        &printerQueue,
-                        QUANTUM,
-                        MAX_PROCESSES);
+                        &printerQueue);
 
     return 0;
 }

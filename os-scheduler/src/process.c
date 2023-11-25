@@ -56,17 +56,29 @@ void executeIO(Process* process)
     }
 }
 
+
+void setTurnaround(Process* process,int startTime, int endTime)
+{
+    process->turnaround_time = endTime - startTime;
+}
+
+
 int isProcessedFinished(Process* process, int currentTime)
 {
     if (process->remaining_burst_time == 0)
     {
         printf("P%d finalizou.\n", process->pid);
         process->end_time = currentTime;
-        printf("P%d com turnaround de %d u.t.\n", process->pid, process->end_time - process->arrival_time);
+        setTurnaround(process, process->arrival_time, process->end_time);
+        // printf("P%d com turnaround de %d u.t.\n", process->turnaround_time);
         return 1;
     }
     return 0;
 }
+
+
+
+
 
 
 

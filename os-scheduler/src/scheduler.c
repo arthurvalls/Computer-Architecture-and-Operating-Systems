@@ -4,60 +4,76 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#define QUANTUM 2
+#define MAX_PROCESSES 5
 
 
 // Função principal do escalonador Round Robin com Feedback
 void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queue* diskQueue,
-                         Queue* tapeQueue, Queue* printerQueue,
-                         int quantum,
-                         int maxProcesses)
+                         Queue* tapeQueue, Queue* printerQueue)
 {
 
     // cria todos os processos e imprime na tela suas infos
-    Process* processes = initializeProcesses(maxProcesses);
-    printProcessesInfo(processes, maxProcesses);
+    Process* processes = initializeProcesses(MAX_PROCESSES);
+    printProcessesInfo(processes);
 
 
     int currentTime = 0;
     int finishedProcesses = 0;
 
 
-    while (finishedProcesses < maxProcesses)
+    while (finishedProcesses < MAX_PROCESSES)
     {
         printf("=========== INSTANTE %d ===========\n", currentTime);
 
-        checkNewProcesses(processes, maxProcesses, currentTime, highPriorityQueue);
+        checkNewProcesses(processes, currentTime, highPriorityQueue);
 
         if (!isQueueEmpty(highPriorityQueue))
         {
             Process currentProcess = queuePop(highPriorityQueue);
-            executeProcess(&currentProcess, quantum);
+            executeProcess(&currentProcess, QUANTUM);
 
+            if (isProcessedFinished(&currentProcess, currentTime))
+                finishedProcesses++;
+
+            else
+            {
+                printf("P%d sofreu preempção, vai pra fila de baixa prioridade.\n", currentProcess.pid);
+                queueInsert(lowPriorityQueue, currentProcess);
+            }
+        }
+        else if (!isQueueEmpty(lowPriorityQueue))
+        {
+            Process currentProcess = queuePop(lowPriorityQueue);
+            executeProcess(&currentProcess, QUANTUM);
             if (isProcessedFinished(&currentProcess, currentTime))
                 finishedProcesses++;
             else
             {
-                printf("P%d sofreu preempção, voltou pro fim da fila.\n", currentProcess.pid);
-                queueInsert(highPriorityQueue, currentProcess);
+                printf("P%d sofreu preempção, volta pro fim da fila de baixa prioridade.\n", currentProcess.pid);
+                queueInsert(lowPriorityQueue, currentProcess);
             }
         }
-        printQueue(highPriorityQueue);
+
+        formattedPrintQueue("Fila de alta prioridade: ", highPriorityQueue);
+        formattedPrintQueue("Fila de baixa prioridade: ", lowPriorityQueue);
         currentTime++;
     }
 
     printf("Escalonamento finalizado com sucesso.\n");
-
+    for (int i=0; i < MAX_PROCESSES; ++i)
+        printf("TT(P%d): %d\n", processes[i].pid, processes[i].end_time);
 }
 
 
-void printProcessesInfo(Process* processes, int maxProcesses)
+void printProcessesInfo(Process* processes)
 {
     if (!(processes == NULL))
     {
         printf("%-10s%-15s%-15s%-20s%-10s\n", "PID", "Burst Time", "Arrival Time", "IO Type", "Status");
         printf("---------------------------------------------------------------\n");
 
-        for (int i = 0; i < maxProcesses; i++)
+        for (int i = 0; i < MAX_PROCESSES; i++)
         {
             printf("%-10d%-15d%-15d%-20s%-10s\n",
                    processes[i].pid,
@@ -74,12 +90,21 @@ void printProcessesInfo(Process* processes, int maxProcesses)
 }
 
 
-void checkNewProcesses(Process* processes, int maxProcesses, int currentTime,  Queue* queue)
+void checkNewProcesses(Process* processes, int currentTime,  Queue* queue)
 {
-    for (int i = 0; i < maxProcesses; i++)
+    for (int i = 0; i < MAX_PROCESSES; i++)
         if(processes[i].arrival_time == currentTime)
         {
             queueInsert(queue, processes[i]);
-            printf("P%d entrou na fila.\n", processes[i].pid);
+            printf("P%d entrou na fila de alta prioridade.\n", processes[i].pid);
         }
+}
+
+
+void printTurnaroundTime(Process* processes)
+{
+    for (int i = 0; i < MAX_PROCESSES; ++i)
+    {
+        printf("Turnaround Time (P%d): %d u.t\n", processes[i].pid, processes[i].turnaround_time);
+    }
 }

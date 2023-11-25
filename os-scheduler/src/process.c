@@ -4,6 +4,10 @@
 #include <stdlib.h>
 
 
+#define MAX_BURST_TIME 10
+#define MAX_ARRIVAL_TIME 7
+
+
 Process* newProcess(int pid)
 {
     Process* process = (Process*)malloc(sizeof(Process));
@@ -12,8 +16,8 @@ Process* newProcess(int pid)
     // process->priority = rand() % 5 + 1; // Random priority between 1 and 5
 
     process->pid = pid;
-    process->burst_time = rand() % 10 + 1; // Random burst time between 1 and 10
-    process->arrival_time = rand() % 5 + 1; // Random arriavel time between 1 and 5
+    process->burst_time = rand() % MAX_BURST_TIME + 1; // Random burst time between 1 and 10
+    process->arrival_time = rand() % MAX_ARRIVAL_TIME + 1; // Random arrival time between 1 and 5
     process->remaining_burst_time = process->burst_time;
     process->io_type = getIOType();
     process->status = READY;

@@ -7,9 +7,6 @@
 
 #define QUANTUM 2
 #define MAX_PROCESSES 5
-#define MAX_BURST_TIME 7
-#define MAX_IO_TIME 4
-
 
 int main()
 {

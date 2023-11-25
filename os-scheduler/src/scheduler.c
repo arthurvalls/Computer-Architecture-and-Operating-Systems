@@ -17,16 +17,15 @@ void printProcessesInfo(Process* processes, int maxProcesses)
 {
     if (!(processes == NULL))
     {
-        printf("%-10s%-15s%-15s%-15s%-20s%-10s\n", "PID", "Burst Time", "Arrival Time", "Remaining Time", "IO Type", "Status");
+        printf("%-10s%-15s%-15s%-20s%-10s\n", "PID", "Burst Time", "Arrival Time", "IO Type", "Status");
         printf("---------------------------------------------------------------\n");
 
         for (int i = 0; i < maxProcesses; i++)
         {
-            printf("%-10d%-15d%-15d%-15d%-20s%-10s\n",
+            printf("%-10d%-15d%-15d%-20s%-10s\n",
                    processes[i].pid,
                    processes[i].burst_time,
                    processes[i].arrival_time,
-                   processes[i].remaining_burst_time,
                    getIOName(processes[i].io_type),
                    getStatus(processes[i].status));
         }

@@ -53,7 +53,7 @@ void executeProcess(Process* process, int quantum);
 int isProcessedFinished(Process* process, int current_time);
 
 const char* getIOName(IOType ioType);
-int getIOType();
+IOType getIOType();
 const char* getStatus(ProcessStatus processStatus);
 void setTurnaround(Process* process,int startTime, int endTime);
 

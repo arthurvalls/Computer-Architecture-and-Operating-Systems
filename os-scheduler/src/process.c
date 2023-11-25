@@ -74,21 +74,10 @@ int isProcessedFinished(Process* process, int currentTime)
 }
 
 
-
-
-
-
-
-void destroyProcess(Process* process)
-{
-    free(process);
-}
-
-int getIOType()
+IOType getIOType()
 {
     return rand() % 3;
 }
-
 
 const char* getIOName(IOType ioType)
 {

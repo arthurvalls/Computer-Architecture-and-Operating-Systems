@@ -85,6 +85,10 @@ void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queu
     printf("\n=========== FINAL ===========\n");
     printf("Tempos de Turnaround: \n\n");
     printTurnaroundTime(processes);
+
+    // desaloca o bloco de memoria dos processos
+    free(processes);
+
 }
 
 

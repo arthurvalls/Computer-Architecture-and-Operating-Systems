@@ -54,6 +54,7 @@ int isProcessedFinished(Process* process, int current_time);
 
 const char* getIOName(IOType ioType);
 IOType getIOType();
+int getIOTime(IOType ioType);
 const char* getStatus(ProcessStatus processStatus);
 void setTurnaround(Process* process,int startTime, int endTime);
 

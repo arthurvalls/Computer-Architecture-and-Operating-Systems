@@ -20,6 +20,8 @@ Process* newProcess(int pid)
     process->remaining_burst_time = process->burst_time;
     process->remaining_quantum = 0;
     process->io_type = getIOType();
+    process->io_duration = getIOTime(process->io_type);
+    process->remaining_io_duration = process->io_duration;
     process->status = READY;
     return process;
 }
@@ -43,15 +45,16 @@ void executeProcess(Process* process, int quantum)
     process->remaining_quantum += 1;
 }
 
-void executeIO(Process* process)
-{
-    IOType IOType = process->io_type;
-    switch(IOType)
-    {
-        case DISK_IO:
-
-    }
-}
+//void executeIO(Process* process)
+//{
+//    process->remaining_io_duration += 1;
+//    if (process->remaining_io_duration == process->io_duration)
+//    switch(IOType)
+//    {
+//        case DISK_IO:
+//
+//    }
+//}
 
 
 void setTurnaround(Process* process,int startTime, int endTime)
@@ -78,6 +81,22 @@ IOType getIOType()
 {
     return rand() % 3;
 }
+
+int getIOTime(IOType ioType)
+{
+    switch(ioType)
+    {
+        case(DISK_IO):
+            return DISK_TIME;
+        case(TAPE_IO):
+            return TAPE_TIME;
+        case(PRINTER_IO):
+            return PRINTER_TIME;
+        default:
+            return 0;
+    }
+}
+
 
 const char* getIOName(IOType ioType)
 {

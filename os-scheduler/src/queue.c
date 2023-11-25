@@ -1,6 +1,7 @@
 // queue.c
 #include "../include/queue.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 void initializeQueue(Queue* queue) {
     queue->front = queue->rear = NULL;

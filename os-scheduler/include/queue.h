@@ -14,6 +14,8 @@ typedef struct {
 } Queue;
 
 void initializeQueue(Queue* queue);
+void freeNode(Node* node);
+void freeQueue(Queue* queue);
 int isQueueEmpty(Queue* queue);
 void queueInsert(Queue* queue, Process process);
 void queueInsertFirst(Queue* queue, Process process);

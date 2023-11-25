@@ -10,12 +10,14 @@
 
 
 // Função principal do escalonador Round Robin com Feedback
-void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queue* diskQueue,
-                         Queue* tapeQueue, Queue* printerQueue)
+void roundRobinScheduler(Process* processes,
+                         Queue* highPriorityQueue,
+                         Queue* lowPriorityQueue,
+                         Queue* diskQueue,
+                         Queue* tapeQueue,
+                         Queue* printerQueue)
 {
-
-    // cria todos os processos e imprime na tela suas infos
-    Process* processes = initializeProcesses(MAX_PROCESSES);
+    // imprime na tela info dos processos
     printProcessesInfo(processes);
 
 
@@ -25,11 +27,8 @@ void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queu
 
     while (finishedProcesses < MAX_PROCESSES)
     {
-        printf("\n=========== INSTANTE %d ===========\n", currentTime);
-        printf("\n");
-        formattedPrintQueue("Fila de alta prioridade: ", highPriorityQueue);
-        formattedPrintQueue("Fila de baixa prioridade: ", lowPriorityQueue);
-        printf("\n");
+        printf("\n=========== INSTANTE %d ===========\n\n", currentTime);
+
 
         checkNewProcesses(processes, currentTime, highPriorityQueue);
 
@@ -75,11 +74,19 @@ void roundRobinScheduler(Queue* highPriorityQueue, Queue* lowPriorityQueue, Queu
                 queueInsertFirst(lowPriorityQueue, currentProcess);
             }
         }
-
+        if (isQueueEmpty(highPriorityQueue) && isQueueEmpty(lowPriorityQueue))
+            printf("\nFilas vazias, CPU está ociosa.\n");
+        else
+        {
+            printf("\n");
+            formattedPrintQueue("Fila de alta prioridade: ", highPriorityQueue);
+            formattedPrintQueue("Fila de baixa prioridade: ", lowPriorityQueue);
+            printf("\n");
+        }
         currentTime++;
     }
 
-    printf("\nEscalonamento finalizado com sucesso.\n\n");
+    printf("\nNão há mais processos, escalonamento finalizado com sucesso.\n");
 
 
     printf("\n=========== FINAL ===========\n");
@@ -122,7 +129,7 @@ void checkNewProcesses(Process* processes, int currentTime,  Queue* queue)
         if(processes[i].arrival_time == currentTime)
         {
             queueInsert(queue, processes[i]);
-            printf("P%d entrou na fila de alta prioridade.\n", processes[i].pid);
+            printf("P%d entrou na fila de alta prioridade.\n\n", processes[i].pid);
         }
 }
 

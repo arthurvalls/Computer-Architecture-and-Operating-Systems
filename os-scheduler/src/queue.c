@@ -6,6 +6,22 @@ void initializeQueue(Queue* queue) {
     queue->front = queue->rear = NULL;
 }
 
+void freeNode(Node* node)
+{
+    free(node);
+}
+
+void freeQueue(Queue* queue)
+{
+    while (!isQueueEmpty(queue)) {
+        Node* temp = queue->front;
+        queue->front = temp->next;
+        freeNode(temp);
+    }
+    // printf("Queue desalocada com sucesso\n");
+}
+
+
 int isQueueEmpty(Queue* queue) {
     return queue->front == NULL;
 }

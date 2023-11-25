@@ -3,7 +3,8 @@
 
 #include "queue.h"
 
-void roundRobinScheduler(Queue* highPriorityQueue,
+void roundRobinScheduler(Process* processes,
+                         Queue* highPriorityQueue,
                          Queue* lowPriorityQueue,
                          Queue* diskQueue,
                          Queue* tapeQueue,

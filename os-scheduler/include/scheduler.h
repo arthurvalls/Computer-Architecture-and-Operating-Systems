@@ -25,4 +25,6 @@ int checkIfHasIo(Queue* diskQueue, Queue* tapeQueue, Queue* printerQueue);
 
 void sendToIO(Process process, Queue* diskQueue, Queue* tapeQueue, Queue* printerQueue);
 
+void setTurnaround(Process* process, int turnaround, Process* processes);
+
 #endif // SCHEDULER_H

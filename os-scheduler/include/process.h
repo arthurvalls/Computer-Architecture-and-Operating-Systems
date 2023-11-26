@@ -54,7 +54,7 @@ Process* initializeProcesses(int maxProcesses);
 
 void executeProcess(Process* process);
 
-int isProcessedFinished(Process* process, int current_time);
+int isProcessedFinished(Process* process);
 
 int isIoFinished(Process* process);
 
@@ -71,8 +71,5 @@ IOType getIOType();
 int getIOTime(IOType ioType);
 
 const char* getStatus(ProcessStatus processStatus);
-
-void setTurnaround(Process* process,int startTime, int endTime);
-
 
 #endif // PROCESS_H

@@ -28,7 +28,7 @@ void roundRobinScheduler(Process* processes,
     while (finishedProcesses < MAX_PROCESSES)
     {
         printf("\n=========== INSTANTE %d ===========\n\n", currentTime);
-        sleep(1);
+        //sleep(1);
 
         checkNewProcesses(processes, currentTime, highPriorityQueue);
 
@@ -37,8 +37,9 @@ void roundRobinScheduler(Process* processes,
             Process currentProcess = queuePop(highPriorityQueue);
             executeProcess(&currentProcess);
 
-            if (isProcessedFinished(&currentProcess, currentTime))
+            if (isProcessedFinished(&currentProcess))
             {
+                setTurnaround(&currentProcess, currentTime, processes);
                 finishedProcesses++;
             }
             else if (isIoTime(&currentProcess))
@@ -61,8 +62,9 @@ void roundRobinScheduler(Process* processes,
             Process currentProcess = queuePop(lowPriorityQueue);
             executeProcess(&currentProcess);
 
-            if (isProcessedFinished(&currentProcess, currentTime))
+            if (isProcessedFinished(&currentProcess))
             {
+                setTurnaround(&currentProcess, currentTime, processes);
                 finishedProcesses++;
             }
             else if (isIoTime(&currentProcess))
@@ -138,7 +140,7 @@ void roundRobinScheduler(Process* processes,
 
 void printProcessesInfo(Process* processes)
 {
-    if (!(processes == NULL))
+    if (processes != NULL)
     {
         printf("%-10s%-15s%-15s%-20s%-20s%-10s\n", "PID", "Burst Time", "Arrival Time", "IO Type", "IO Start", "Status");
         printf("---------------------------------------------------------------\n");
@@ -174,10 +176,13 @@ void checkNewProcesses(Process* processes, int currentTime,  Queue* queue)
 
 void printTurnaroundTime(Process* processes)
 {
+    float averageTurnaround = 0;
     for (int i = 0; i < MAX_PROCESSES; ++i)
     {
         printf("TT (P%d): %d u.t\n", processes[i].pid, processes[i].turnaround_time);
+        averageTurnaround += (float)processes[i].turnaround_time;
     }
+    printf("\nTurnaround Médio: %.2f u.t.\n", averageTurnaround/MAX_PROCESSES);
 }
 
 int isCPUActive(Queue* highPriorityQueue, Queue* lowPriorityQueue)
@@ -212,5 +217,16 @@ void sendToIO(Process process, Queue* diskQueue, Queue* tapeQueue, Queue* printe
             printf("P%d vai para a fila de impressora\n", process.pid);
             queueInsert(printerQueue, process);
             break;
+    }
+}
+
+void setTurnaround(Process* process, int turnaround, Process* processes)
+{
+    for (int i = 0; i < MAX_PROCESSES; ++i)
+    {
+        if (processes[i].pid == process->pid)
+        {
+            processes[i].turnaround_time = turnaround - processes[i].arrival_time;
+        }
     }
 }

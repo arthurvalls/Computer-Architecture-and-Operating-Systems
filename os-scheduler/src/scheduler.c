@@ -18,7 +18,7 @@ void roundRobinScheduler(Process* processes,
                          Queue* tapeQueue,
                          Queue* printerQueue)
 {
-    // imprime na tela info dos processos
+    // imprime na tela info dos process
     printProcessesInfo(processes);
 
     int currentTime = 0;
@@ -121,7 +121,7 @@ void roundRobinScheduler(Process* processes,
         if (!isCPUActive(highPriorityQueue, lowPriorityQueue) &&
             !checkIfHasIo(diskQueue, tapeQueue, printerQueue))
         {
-            printf("\nNenhuma fila com processos, CPU ociosa.\n");
+            printf("\nNenhuma fila com process, CPU ociosa.\n");
         }
         else
         {
@@ -134,54 +134,55 @@ void roundRobinScheduler(Process* processes,
         currentTime++;
     }
 
-    printf("\nNão há mais processos, escalonamento finalizado com sucesso.\n");
+    printf("\nNão há mais process, escalonamento finalizado com sucesso.\n");
 
 
     printf("\n=========== FINAL ===========\n");
     printf("Tempos de Turnaround: \n\n");
     printTurnaroundTime(processes);
 
-    // desaloca o bloco de memoria dos processos
+    // desaloca o bloco de memoria dos process
     free(processes);
 }
 
 
-void printProcessesInfo(Process* processes)
+void printProcessesInfo(Process* process)
 {
-    if (processes != NULL)
+    if (process != NULL)
     {
         printf("================= Processos ================= \n\n");
         for (int i = 0; i < MAX_PROCESSES; i++)
         {
-            printf("PID = %d, Tempo de Serviço = %d, Tempo de Chegada = %d, Tipos I/O (Tempo de Inicio) = ",
-                   processes[i].pid,
-                   processes[i].burst_time,
-                   processes[i].arrival_time);
+            printf("PID: %d\n", process[i].pid);
+            printf("Tempo de Serviço: %d\n", process[i].burst_time);
+            printf("Tempo de Chegada: %d\n", process[i].arrival_time);
+            printf("Tipos I/O (Tempo de Inicio): ");
 
-
-            if (processes[i].num_io_operations == 0)
-                printf("Sem I/O");
+            if (process[i].num_io_operations == 0)
+            {
+                printf("Sem I/O\n");
+            }
             else
             {
-                for (int j = 0; j < processes[i].num_io_operations; j++)
+                for (int j = 0; j < process[i].num_io_operations; j++)
                 {
-                    printf("%s (%d)", getIOName(processes[i].io_operations[j].io_type),
-                           processes[i].io_operations[j].start_time);
+                    printf("%s (%d)", getIOName(process[i].io_operations[j].io_type),
+                           process[i].io_operations[j].start_time);
 
-                    if (j < processes[i].num_io_operations - 1)
+                    if (j < process[i].num_io_operations - 1)
                         printf(", ");
                 }
+                printf("\n");
             }
-
-
-            printf(", Status = %s\n", getStatus(processes[i].status));
+            printf("\n");
         }
     }
     else
     {
-        printf("Sem processos.\n");
+        printf("Sem processo.\n");
     }
 }
+
 
 
 

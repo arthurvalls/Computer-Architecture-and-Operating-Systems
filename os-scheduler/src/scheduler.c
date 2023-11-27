@@ -87,7 +87,10 @@ void roundRobinScheduler(Process* processes,
             Process currentIO = queuePop(diskQueue);
             executeIO(&currentIO);
             if (isIoFinished(&currentIO))
+            {
+                printf(" vai pra fila de baixa prioridade.\n");
                 queueInsert(lowPriorityQueue, currentIO);
+            }
             else
                 queueInsertFirst(diskQueue, currentIO);
         }
@@ -96,7 +99,10 @@ void roundRobinScheduler(Process* processes,
             Process currentIO = queuePop(tapeQueue);
             executeIO(&currentIO);
             if (isIoFinished(&currentIO))
+            {
+                printf(" vai pra fila de alta prioridade.\n");
                 queueInsert(highPriorityQueue, currentIO);
+            }
             else
                 queueInsertFirst(tapeQueue, currentIO);
         }
@@ -105,7 +111,10 @@ void roundRobinScheduler(Process* processes,
             Process currentIO = queuePop(printerQueue);
             executeIO(&currentIO);
             if (isIoFinished(&currentIO))
+            {
+                printf(" vai pra fila de alta prioridade.\n");
                 queueInsert(highPriorityQueue, currentIO);
+            }
             else
                 queueInsertFirst(printerQueue, currentIO);
         }
@@ -134,7 +143,6 @@ void roundRobinScheduler(Process* processes,
 
     // desaloca o bloco de memoria dos processos
     free(processes);
-
 }
 
 
@@ -142,18 +150,26 @@ void printProcessesInfo(Process* processes)
 {
     if (processes != NULL)
     {
-        printf("%-10s%-15s%-15s%-20s%-20s%-10s\n", "PID", "Burst Time", "Arrival Time", "IO Type", "IO Start", "Status");
-        printf("---------------------------------------------------------------\n");
-
+        printf("Process: \n");
         for (int i = 0; i < MAX_PROCESSES; i++)
         {
-            printf("%-10d%-15d%-15d%-20s%-15d%-10s\n",
+            printf("PID = %d, Burst Time = %d, Arrival Time = %d, I/O Types (Start Time) = ",
                    processes[i].pid,
                    processes[i].burst_time,
-                   processes[i].arrival_time,
-                   getIOName(processes[i].io_type),
-                   processes[i].io_start,
-                   getStatus(processes[i].status));
+                   processes[i].arrival_time);
+
+            // Print IO Types and IO Starts
+            for (int j = 0; j < processes[i].num_io_operations; j++)
+            {
+                printf("%s (%d)", getIOName(processes[i].io_operations[j].io_type),
+                       processes[i].io_operations[j].start_time);
+
+                if (j < processes[i].num_io_operations - 1)
+                    printf(", ");
+            }
+
+            // Print status
+            printf(", Status = %s\n", getStatus(processes[i].status));
         }
     }
     else
@@ -161,6 +177,7 @@ void printProcessesInfo(Process* processes)
         printf("Processes array is empty\n");
     }
 }
+
 
 
 void checkNewProcesses(Process* processes, int currentTime,  Queue* queue)
@@ -203,18 +220,23 @@ int checkIfHasIo(Queue* diskQueue, Queue* tapeQueue, Queue* printerQueue)
 
 void sendToIO(Process process, Queue* diskQueue, Queue* tapeQueue, Queue* printerQueue)
 {
-    switch (process.io_type)
+    printf("P%d vai para a fila de %s.\n", process.pid,
+           getIOName(process.io_operations[process.current_io_operation].io_type));
+    switch (process.io_operations[process.current_io_operation].io_type)
     {
         case(DISK_IO):
-            printf("P%d vai para a fila de disco\n", process.pid);
+            if (!isQueueEmpty(diskQueue))
+                process.status = IO;
             queueInsert(diskQueue, process);
             break;
         case(TAPE_IO):
-            printf("P%d vai para a fila de fita\n", process.pid);
+            if (!isQueueEmpty(tapeQueue))
+                process.status = IO;
             queueInsert(tapeQueue, process);
             break;
         case(PRINTER_IO):
-            printf("P%d vai para a fila de impressora\n", process.pid);
+            if (!isQueueEmpty(printerQueue))
+                process.status = IO;
             queueInsert(printerQueue, process);
             break;
     }

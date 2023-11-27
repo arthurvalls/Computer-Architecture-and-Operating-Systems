@@ -101,8 +101,8 @@ void printAllQueues(Queue* highPriorityQueue,
     printf("\n");
     formattedPrintQueue("Fila de alta prioridade", highPriorityQueue);
     formattedPrintQueue("Fila de baixa prioridade", lowPriorityQueue);
-    formattedPrintQueue("Fila de IO disco", diskQueue);
-    formattedPrintQueue("Fila de IO fita", tapeQueue);
-    formattedPrintQueue("Fila de IO impressão", printerQueue);
+    formattedPrintQueue("Fila de I/O Disco", diskQueue);
+    formattedPrintQueue("Fila de I/O Fita", tapeQueue);
+    formattedPrintQueue("Fila de I/O Impressão", printerQueue);
     printf("\n");
 }

@@ -7,8 +7,7 @@
 #define PRINTER_TIME 5
 
 
-#define MAX_BURST_TIME 7
-#define MAX_ARRIVAL_TIME 4
+
 
 
 typedef enum {
@@ -16,6 +15,15 @@ typedef enum {
     TAPE_IO,
     PRINTER_IO,
 } IOType;
+
+
+typedef struct {
+    IOType io_type;
+    int io_duration;
+    int start_time;
+    int remaining_duration;
+} IOOperation;
+
 
 typedef enum {
     READY,
@@ -43,6 +51,10 @@ typedef struct {
     int remaining_burst_time; // To keep track of remaining burst time during round-robin
     int current_burst_time;
 
+
+    IOOperation* io_operations;
+    int num_io_operations;
+    int current_io_operation;
     IOType io_type;
     ProcessStatus status;
 } Process;
@@ -71,5 +83,7 @@ IOType getIOType();
 int getIOTime(IOType ioType);
 
 const char* getStatus(ProcessStatus processStatus);
+
+int compareIOOperations(const void* a, const void* b);
 
 #endif // PROCESS_H

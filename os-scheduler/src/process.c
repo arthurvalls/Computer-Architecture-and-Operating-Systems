@@ -22,17 +22,22 @@ Process* newProcess(int pid)
     process->current_io_operation = 0;
     process->io_operations = (IOOperation*)malloc(process->num_io_operations * sizeof(IOOperation));
 
+    int burstAux = 0;
+
     for (int i = 0; i < process->num_io_operations; ++i) {
+
         process->io_operations[i].io_type = getIOType();
         process->io_operations[i].io_duration = getIOTime(process->io_operations[i].io_type);
-        process->io_operations[i].start_time = rand() % (process->burst_time - 1) + 1; // Random start time within burst time
-
+        process->io_operations[i].start_time = rand() % (process->burst_time - burstAux - process->num_io_operations + i) + 1;
         process->io_operations[i].remaining_duration = process->io_operations[i].io_duration;
+        burstAux = process->io_operations[i].start_time;
     }
+
+    process->remaining_burst_time = process->burst_time;
     qsort(process->io_operations, process->num_io_operations, sizeof(IOOperation), compareIOOperations);
 
 
-    process->remaining_burst_time = process->burst_time;
+
 
     process->remaining_quantum = 0;
     process->current_burst_time = 0;

@@ -17,9 +17,10 @@ Process* newProcess(int pid)
     process->pid = pid;
     process->burst_time = rand() % MAX_BURST_TIME + 1; // Random burst time between 1 and 7
     process->arrival_time = rand() % (MAX_ARRIVAL_TIME + 1); // Random arrival time between 0 and 4
-    process->remaining_burst_time = process->burst_time;
     process->io_start = rand() % process->burst_time + 1;
-
+    if (process->io_start == process->burst_time)
+        process->burst_time += 1;
+    process->remaining_burst_time = process->burst_time;
 
     process->remaining_quantum = 0;
     process->current_burst_time = 0;
@@ -77,6 +78,7 @@ int isIoFinished(Process* process)
 {
     if (process->remaining_io_duration == 0)
     {
+        process->remaining_quantum = 0;
         printf("P%d finalizou seu IO.\n", process->pid);
         return 1;
     }

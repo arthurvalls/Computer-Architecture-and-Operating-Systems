@@ -41,7 +41,6 @@ void queueInsert(Queue* queue, Process process) {
 
 void queueInsertFirst(Queue* queue, Process process)
 {
-    printf("P%d ainda tem %d u.t para finalizar.\n", process.pid, process.remaining_burst_time);
     Node* newNode = (Node*)malloc(sizeof(Node));
     newNode->process = process;
     newNode->next = NULL;

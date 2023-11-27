@@ -3,8 +3,8 @@
 
 
 #define DISK_TIME 3
-#define TAPE_TIME 3
-#define PRINTER_TIME 3
+#define TAPE_TIME 4
+#define PRINTER_TIME 5
 
 
 #define MAX_BURST_TIME 7

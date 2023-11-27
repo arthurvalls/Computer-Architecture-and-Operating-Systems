@@ -89,7 +89,7 @@ void roundRobinScheduler(Process* processes,
             if (isIoFinished(&currentIO))
                 queueInsert(lowPriorityQueue, currentIO);
             else
-                queueInsert(diskQueue, currentIO);
+                queueInsertFirst(diskQueue, currentIO);
         }
         if (!isQueueEmpty(tapeQueue))
         {
@@ -98,7 +98,7 @@ void roundRobinScheduler(Process* processes,
             if (isIoFinished(&currentIO))
                 queueInsert(highPriorityQueue, currentIO);
             else
-                queueInsert(tapeQueue, currentIO);
+                queueInsertFirst(tapeQueue, currentIO);
         }
         if (!isQueueEmpty(printerQueue))
         {
@@ -107,7 +107,7 @@ void roundRobinScheduler(Process* processes,
             if (isIoFinished(&currentIO))
                 queueInsert(highPriorityQueue, currentIO);
             else
-                queueInsert(printerQueue, currentIO);
+                queueInsertFirst(printerQueue, currentIO);
         }
         if (!isCPUActive(highPriorityQueue, lowPriorityQueue) &&
             !checkIfHasIo(diskQueue, tapeQueue, printerQueue))

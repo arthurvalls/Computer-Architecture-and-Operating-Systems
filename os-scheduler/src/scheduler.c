@@ -150,31 +150,36 @@ void printProcessesInfo(Process* processes)
 {
     if (processes != NULL)
     {
-        printf("Process: \n");
+        printf("================= Processos ================= \n\n");
         for (int i = 0; i < MAX_PROCESSES; i++)
         {
-            printf("PID = %d, Burst Time = %d, Arrival Time = %d, I/O Types (Start Time) = ",
+            printf("PID = %d, Tempo de Serviço = %d, Tempo de Chegada = %d, Tipos I/O (Tempo de Inicio) = ",
                    processes[i].pid,
                    processes[i].burst_time,
                    processes[i].arrival_time);
 
-            // Print IO Types and IO Starts
-            for (int j = 0; j < processes[i].num_io_operations; j++)
-            {
-                printf("%s (%d)", getIOName(processes[i].io_operations[j].io_type),
-                       processes[i].io_operations[j].start_time);
 
-                if (j < processes[i].num_io_operations - 1)
-                    printf(", ");
+            if (processes[i].num_io_operations == 0)
+                printf("Sem I/O");
+            else
+            {
+                for (int j = 0; j < processes[i].num_io_operations; j++)
+                {
+                    printf("%s (%d)", getIOName(processes[i].io_operations[j].io_type),
+                           processes[i].io_operations[j].start_time);
+
+                    if (j < processes[i].num_io_operations - 1)
+                        printf(", ");
+                }
             }
 
-            // Print status
+
             printf(", Status = %s\n", getStatus(processes[i].status));
         }
     }
     else
     {
-        printf("Processes array is empty\n");
+        printf("Sem processos.\n");
     }
 }
 

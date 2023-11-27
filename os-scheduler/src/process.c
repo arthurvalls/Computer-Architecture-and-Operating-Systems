@@ -1,9 +1,10 @@
 #include "../include/process.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 
-#define MAX_BURST_TIME 7
+#define MAX_BURST_TIME 10
 #define MAX_ARRIVAL_TIME 4
 
 
@@ -11,40 +12,38 @@ Process* newProcess(int pid)
 {
     Process* process = (Process*)malloc(sizeof(Process));
 
-    // process->ppid = getppid();
-    // process->priority = rand() % 5 + 1; // Random priority between 1 and 5
+
 
     process->pid = pid;
-    process->burst_time = rand() % (MAX_BURST_TIME - 1) + 2; // Random burst time between 2 and 7
-    process->arrival_time = rand() % (MAX_ARRIVAL_TIME + 1); // Random arrival time between 0 and 4
+    process->arrival_time = rand() % (MAX_ARRIVAL_TIME + 1);
+    process->burst_time = rand() % (MAX_BURST_TIME - 7 + 1) + 7; // entre 7 e 10
+    process->remaining_burst_time = process->burst_time;
+    process->remaining_quantum = 0;
+    process->current_burst_time = 0;
+    process->status = READY;
 
-    process->num_io_operations = rand() % 2 + 1;
+
+    process->num_io_operations = rand() % 3;
+    if (process->num_io_operations == 0)
+        return process;
+
+
     process->current_io_operation = 0;
     process->io_operations = (IOOperation*)malloc(process->num_io_operations * sizeof(IOOperation));
 
-    int burstAux = 0;
 
-    for (int i = 0; i < process->num_io_operations; ++i) {
-
+    for (int i = 0; i < process->num_io_operations; ++i)
+    {
         process->io_operations[i].io_type = getIOType();
         process->io_operations[i].io_duration = getIOTime(process->io_operations[i].io_type);
-        process->io_operations[i].start_time = rand() % (process->burst_time - burstAux - process->num_io_operations + i) + 1;
         process->io_operations[i].remaining_duration = process->io_operations[i].io_duration;
-        burstAux = process->io_operations[i].start_time;
+        process->io_operations[i].start_time = rand() % 3 + 1;
     }
 
-    process->remaining_burst_time = process->burst_time;
+
     qsort(process->io_operations, process->num_io_operations, sizeof(IOOperation), compareIOOperations);
 
 
-
-
-    process->remaining_quantum = 0;
-    process->current_burst_time = 0;
-    //process->io_type = getIOType();
-    //process->io_duration = getIOTime(process->io_type);
-    //process->remaining_io_duration = process->io_duration;
-    process->status = READY;
     return process;
 }
 
@@ -118,10 +117,14 @@ int isProcessedFinished(Process* process)
 
 int isIoTime(Process* process)
 {
-    if (process->current_burst_time == process->io_operations[process->current_io_operation].start_time)
-        return 1;
-    else
-        return 0;
+    if (process->io_operations != NULL)
+    {
+        if (process->current_burst_time == process->io_operations[process->current_io_operation].start_time)
+            return 1;
+        else
+            return 0;
+    }
+    return 0;
 }
 
 IOType getIOType()
@@ -185,13 +188,4 @@ const char* getStatus(ProcessStatus processStatus)
         default:
             return "Unknown Status Type";
     }
-}
-
-
-
-
-
-int getTurnaround(Process* process, int endtime)
-{
-    return endtime - process->arrival_time;
 }

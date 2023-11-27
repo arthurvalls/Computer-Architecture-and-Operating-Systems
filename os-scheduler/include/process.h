@@ -2,12 +2,9 @@
 #define PROCESS_H
 
 
-#define DISK_TIME 3
-#define TAPE_TIME 4
-#define PRINTER_TIME 5
-
-
-
+#define DISK_TIME 2
+#define TAPE_TIME 3
+#define PRINTER_TIME 4
 
 
 typedef enum {
@@ -36,19 +33,16 @@ typedef enum {
 
 typedef struct {
     int pid;
-    int ppid;
-    int priority;
+
 
     int arrival_time;
     int burst_time;
     int end_time;
     int turnaround_time;
 
-    int io_duration;
-    int remaining_io_duration;
-    int io_start;
+
     int remaining_quantum;
-    int remaining_burst_time; // To keep track of remaining burst time during round-robin
+    int remaining_burst_time;
     int current_burst_time;
 
 

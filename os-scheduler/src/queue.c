@@ -58,7 +58,7 @@ void queueInsertFirst(Queue* queue, Process process)
 
 Process queuePop(Queue* queue) {
     if (isQueueEmpty(queue)) {
-        // Tratar fila vazia conforme necessário
+
         exit(EXIT_FAILURE);
     }
 

@@ -134,7 +134,7 @@ void roundRobinScheduler(Process* processes,
         currentTime++;
     }
 
-    printf("\nNão há mais process, escalonamento finalizado com sucesso.\n");
+    printf("\nNão há mais processos, escalonamento finalizado com sucesso.\n");
 
 
     printf("\n=========== FINAL ===========\n");

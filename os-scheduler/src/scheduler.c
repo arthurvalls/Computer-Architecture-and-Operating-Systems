@@ -121,7 +121,7 @@ void roundRobinScheduler(Process* processes,
         if (!isCPUActive(highPriorityQueue, lowPriorityQueue) &&
             !checkIfHasIo(diskQueue, tapeQueue, printerQueue))
         {
-            printf("\nNenhuma fila com process, CPU ociosa.\n");
+            printf("\nNenhuma fila com processos, CPU ociosa.\n");
         }
         else
         {
@@ -151,16 +151,16 @@ void printProcessesInfo(Process* process)
     if (process != NULL)
     {
         printf("================= Processos ================= \n\n");
+
+        printf("PID\tTempo de chegada\tTempo de serviço\tI/O (Tempo chegada)\n");
+
         for (int i = 0; i < MAX_PROCESSES; i++)
         {
-            printf("PID: %d\n", process[i].pid);
-            printf("Tempo de Serviço: %d\n", process[i].burst_time);
-            printf("Tempo de Chegada: %d\n", process[i].arrival_time);
-            printf("Tipos I/O (Tempo de Inicio): ");
+            printf(" %d\t\t%d\t\t\t%d\t\t", process[i].pid, process[i].burst_time, process[i].arrival_time);
 
             if (process[i].num_io_operations == 0)
             {
-                printf("Sem I/O\n");
+                printf("Sem I/O");
             }
             else
             {
@@ -172,7 +172,6 @@ void printProcessesInfo(Process* process)
                     if (j < process[i].num_io_operations - 1)
                         printf(", ");
                 }
-                printf("\n");
             }
             printf("\n");
         }

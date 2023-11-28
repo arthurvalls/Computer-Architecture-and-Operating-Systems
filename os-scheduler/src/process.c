@@ -5,6 +5,7 @@
 
 
 #define MAX_BURST_TIME 10
+#define MIN_BURST_TIME 7
 #define MAX_ARRIVAL_TIME 4
 
 
@@ -12,16 +13,13 @@ Process* newProcess(int pid)
 {
     Process* process = (Process*)malloc(sizeof(Process));
 
-
-
     process->pid = pid;
     process->arrival_time = rand() % (MAX_ARRIVAL_TIME + 1);
-    process->burst_time = rand() % (MAX_BURST_TIME - 7 + 1) + 7; // entre 7 e 10
+    process->burst_time = rand() % (MAX_BURST_TIME - MIN_BURST_TIME + 1) + MIN_BURST_TIME;
     process->remaining_burst_time = process->burst_time;
     process->remaining_quantum = 0;
     process->current_burst_time = 0;
     process->status = READY;
-
 
     process->num_io_operations = rand() % 3;
     if (process->num_io_operations == 0)
@@ -31,7 +29,6 @@ Process* newProcess(int pid)
     process->current_io_operation = 0;
     process->io_operations = (IOOperation*)malloc(process->num_io_operations * sizeof(IOOperation));
 
-
     for (int i = 0; i < process->num_io_operations; ++i)
     {
         process->io_operations[i].io_type = getIOType();
@@ -40,9 +37,7 @@ Process* newProcess(int pid)
         process->io_operations[i].start_time = rand() % 3 + 1;
     }
 
-
     qsort(process->io_operations, process->num_io_operations, sizeof(IOOperation), compareIOOperations);
-
 
     return process;
 }

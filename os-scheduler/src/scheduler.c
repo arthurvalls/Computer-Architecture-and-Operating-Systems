@@ -152,7 +152,7 @@ void printProcessesInfo(Process* process)
     {
         printf("================= Processos ================= \n\n");
 
-        printf("PID\tTempo de chegada\tTempo de serviço\tI/O (Tempo chegada)\n");
+        printf("PID\tTempo de serviço\tTempo de chegada\tI/O (Tempo chegada)\n");
 
         for (int i = 0; i < MAX_PROCESSES; i++)
         {

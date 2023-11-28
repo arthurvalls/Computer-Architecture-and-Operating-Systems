@@ -178,8 +178,6 @@ const char* getStatus(ProcessStatus processStatus)
             return "RUNNING";
         case IO:
             return "IO";
-        case FINISHED:
-            return "FINISHED";
         default:
             return "Unknown Status Type";
     }

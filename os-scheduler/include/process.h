@@ -26,10 +26,7 @@ typedef struct {
 typedef enum {
     READY,
     RUNNING,
-    WAITING,
-    BLOCKED,
-    IO,
-    FINISHED
+    IO
 } ProcessStatus;
 
 // Estrutura que define atributos de um processo.
